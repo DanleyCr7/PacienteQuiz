@@ -83,7 +83,7 @@ export default class Quiz extends React.Component {
 				idPesquisador: this.state.pesquisador
 			}
 			// console.log(teste)
-			this.props.navigation.navigate('form', {
+			await this.props.navigation.replace('form', {
 				respostas: respostas,
 				rota: 'Edinburgh'
 			})
@@ -176,9 +176,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 	},
 	Botao: {
-		backgroundColor: '#268AEC',
+		backgroundColor: '#3B54B8',
 		borderRadius: 12,
-		height: 50,
+		height: 40,
 		width: 250,
 		// alignItems: 'center'
 		justifyContent: 'center',
@@ -208,25 +208,25 @@ const styles = StyleSheet.create({
 	escolhido: {
 		fontSize: 20,
 		color: '#fff',
-		// borderWidth: 2,
+		borderWidth: 2,
 		textAlign: 'center',
-		backgroundColor: '#21496B',
+		backgroundColor: '#3B54B8',
 		borderRadius: 10,
 		// margin: 8,
-		height: 40,
+		// height: 40,
 		width: 250,
-		marginTop: 20
-
+		marginTop: 20,
+		borderColor: '#3B54B8',
 	},
 	naoEscolhido: {
 		fontSize: 20,
 		color: '#fff',
 		borderWidth: 2,
 		textAlign: 'center',
-		borderColor: '#21496B',
+		borderColor: '#3B54B8',
 		borderRadius: 10,
 		// margin: 8,
-		height: 40,
+		// height: 40,
 		width: 250,
 		alignItems: 'center',
 		justifyContent: 'center',

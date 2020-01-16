@@ -70,7 +70,7 @@ const Router = createStackNavigator({
     screen: Pisttsburgh,
     path: 'pisttsburgh/:pisttsburgh',
     navigationOptions: {
-      title: 'Edinburgh',
+      title: 'pisttsburgh',
     }
   },
 

@@ -23,24 +23,24 @@ export default class Quiz extends React.Component {
         [
           '',
           'Considerando apenas o seu bem-estar pessoal e com liberdade total de planejar seu dia, a que horas você se levantaria?',
-          // 'Considerando apenas o seu bem-estar pessoal e com liberdade total de planejar sua noite a que horas você se deitaria?',
-          // 'Até que ponto você depende do despertado para acordar de manhã?',
-          // 'Você acha fácil acordar de manhã?',
-          // 'Você se sente alerta durante a primeira meia hora depois de acordar?',
-          // 'Como é o seu apetite durante a primeira meia hora depois de acordar?',
-          // 'Durante a primeira meia hora depois de acordar você se sente cansado?',
-          // 'Se você não tem compromisso no dia seguinte e comparando com sua hora habitual, a que horas voce gostaria de ir deitar?',
-          // 'Você decidiu fazer exercícios físicos. Um amigo sugeriu o horário das 7h00 às 8h00 da manhã, duas vezes por semana. Considerando apenas seu bem-estar pessoal, o que você acha que fazer exercícios nesse horário?',
-          // 'A que horas da noite você se sente cansado e com vontade de dormir?',
-          // 'Você quer estar no máximo de sua forma para fazer um teste que dura duas horas e que você sabe que é mentalmente cansativo. Considerando apenas seu bem-estar pessoal, qual desses horários você escolhereria para fazer esse teste?',
-          // 'Se você fosse deitar às 23:00 horas em que nivel de cansaço você se sentiria?',
-          // 'Por alguma razão você foi dormir várias horas mais tarde do que é seu costume. Se no dia seguinte você não tiver hora certa para acordar, o que aconteceria com você?',
-          // 'Se você que ficar acordado das 4:00 às 6:00 horas para realizar uma tarefa e não tiver compromissos no dia seguinte, o que você faria?',
-          // 'Se você tiver que fazer duas horas de exercício físico pesado e considerando apenas o seu bem-estar pessoal, qual destes horários você escolheria?',
-          // 'Você decidiu fazer exercícios físicos. Um amigo sugeriu o horário das 22:00 às 23:00 horas, duas vezes por semana. Considerando apenas seu bem-estar pessoal, o que você acha que fazer exercícios nesse horário?',
-          // // 'Suponha você possa escolher o seu próprio horário de trabalho e que você e que você deva trabalhar cinco horas seguidas por dia. Imagine que seja um serviço interessante e que você ganhe por produção. Qual o horário que você escolheria?(Marque a hora do início)',
-          // 'A que hora do dia você atinge seu melhor momento de bem-estar?',
-          // 'Fala-se em pessoas matutinas e vespertinas (as primeiras gostam de acordar cedo e dormir cedo, as segundas de acordar tarde e dormir tarde). Com que desses tipos você se identifica?',
+          'Considerando apenas o seu bem-estar pessoal e com liberdade total de planejar sua noite a que horas você se deitaria?',
+          'Até que ponto você depende do despertado para acordar de manhã?',
+          'Você acha fácil acordar de manhã?',
+          'Você se sente alerta durante a primeira meia hora depois de acordar?',
+          'Como é o seu apetite durante a primeira meia hora depois de acordar?',
+          'Durante a primeira meia hora depois de acordar você se sente cansado?',
+          'Se você não tem compromisso no dia seguinte e comparando com sua hora habitual, a que horas voce gostaria de ir deitar?',
+          'Você decidiu fazer exercícios físicos. Um amigo sugeriu o horário das 7h00 às 8h00 da manhã, duas vezes por semana. Considerando apenas seu bem-estar pessoal, o que você acha que fazer exercícios nesse horário?',
+          'A que horas da noite você se sente cansado e com vontade de dormir?',
+          'Você quer estar no máximo de sua forma para fazer um teste que dura duas horas e que você sabe que é mentalmente cansativo. Considerando apenas seu bem-estar pessoal, qual desses horários você escolhereria para fazer esse teste?',
+          'Se você fosse deitar às 23:00 horas em que nivel de cansaço você se sentiria?',
+          'Por alguma razão você foi dormir várias horas mais tarde do que é seu costume. Se no dia seguinte você não tiver hora certa para acordar, o que aconteceria com você?',
+          'Se você que ficar acordado das 4:00 às 6:00 horas para realizar uma tarefa e não tiver compromissos no dia seguinte, o que você faria?',
+          'Se você tiver que fazer duas horas de exercício físico pesado e considerando apenas o seu bem-estar pessoal, qual destes horários você escolheria?',
+          'Você decidiu fazer exercícios físicos. Um amigo sugeriu o horário das 22:00 às 23:00 horas, duas vezes por semana. Considerando apenas seu bem-estar pessoal, o que você acha que fazer exercícios nesse horário?',
+          // 'Suponha você possa escolher o seu próprio horário de trabalho e que você e que você deva trabalhar cinco horas seguidas por dia. Imagine que seja um serviço interessante e que você ganhe por produção. Qual o horário que você escolheria?(Marque a hora do início)',
+          'A que hora do dia você atinge seu melhor momento de bem-estar?',
+          'Fala-se em pessoas matutinas e vespertinas (as primeiras gostam de acordar cedo e dormir cedo, as segundas de acordar tarde e dormir tarde). Com que desses tipos você se identifica?',
 
         ],
       options: [
@@ -146,7 +146,7 @@ export default class Quiz extends React.Component {
           '23h:00-05h00',
           '05h00-08h00',
           '08h00-10h00',
-          '10h0-17h00',
+          '10h00-17h00',
           '17h00-22h00',
           '22h00-24h00'
         ],
@@ -193,7 +193,7 @@ export default class Quiz extends React.Component {
       }
       // console.log(teste)
 
-      await this.props.navigation.navigate('form', {
+      await this.props.navigation.replace('form', {
         respostas: respostas,
         rota: 'Ostberg'
       })
@@ -267,10 +267,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   Botao: {
-    backgroundColor: '#268AEC',
+    backgroundColor: '#3B54B8',
     borderRadius: 12,
-    height: 50,
-    width: 110,
+    height: 40,
+    width: 250,
     // alignItems: 'center'
     justifyContent: 'center',
     marginTop: 20,
@@ -300,22 +300,22 @@ const styles = StyleSheet.create({
   escolhido: {
     fontSize: 20,
     color: '#fff',
-    // borderWidth: 2,
+    borderWidth: 2,
     textAlign: 'center',
-    backgroundColor: '#21496B',
+    backgroundColor: '#3B54B8',
     borderRadius: 10,
     // margin: 8,
     // height: 40,
     width: 250,
-    marginTop: 20
-
+    marginTop: 20,
+    borderColor: '#3B54B8',
   },
   naoEscolhido: {
     fontSize: 20,
     color: '#fff',
     borderWidth: 2,
     textAlign: 'center',
-    borderColor: '#21496B',
+    borderColor: '#3B54B8',
     borderRadius: 10,
     // margin: 8,
     // height: 40,

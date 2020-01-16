@@ -25,21 +25,21 @@ export default class Quiz extends React.Component {
           '',
           'Com que frequência você comete erros por falta de atenção, quando tem que trabalhar num projeto chato ou dificil?',
           'Com que frequência você tem dificuldade para manter a atenção quando está fazendo um trabalho chato ou repetitivo?',
-          'Com que frequência você te dificuldade para se concetrar no que as pessoas dizem, mesmo quando elas estão falando diretamente com você?',
+          'Com que frequência você tem dificuldade para se concetrar no que as pessoas dizem, mesmo quando elas estão falando diretamente com você?',
           'Com que frequência você deixa um projeto pela metade depois de já ter feito as partes mais dificeis?',
           'Com que frequência você tem dificuldade para fazer um trabalho que exige organização?',
-          'Quando você precisa fazer algo que exige muita concetração, com que frenquência você evita ou adia?',
+          'Quando você precisa fazer algo que exige muita concectração, com que frenquência você evita ou adia?',
           'Com que frequência você coloca as coisas fora do lugar ou tem dificuldade para encontrar as coisas em casa ou no trabalho?',
           'Com que frequência você se distrai com atividades ou barulho á sua volta?',
           'Com que frequência você tem dificuldade para lembrar de compromissos ou obrigações?',
           //parte b
-          'Com que frequência você voce fica se mexendo na cadeira ou balançando as mãos ou os pés quando precisa ficar sentado(a) por muito tempo?',
+          'Com que frequência você fica se mexendo na cadeira ou balançando as mãos ou os pés quando precisa ficar sentado(a) por muito tempo?',
           'Com que frequência você se levanta da cadeira em reuniões ou em outras situações onde deveria ficar sentado(a)?',
           'Com que frequência você se sente inquieto(a) ou agitado?',
           'Com que frequência você tem dificuldade para sossegar e relaxar quando tem tempo livre para você?',
           'Com que frequência você se sente ativo demais e necessitando fazer coisas , como se tivesse "com um motor ligado?"',
           'Com que frequência você se pega falando demais em situações sociais?',
-          'Quando você está conversando, com que frequência você se pega terminando as frases das pessoas antes delas',
+          'Quando você está conversando, com que frequência você se pega terminando as frases das pessoas antes delas?',
           'Com que frequência você tem dificuldade para esperar nas situações onde cada um tem a sua vez?',
           'Com que frequência você interrope os outros quando eles estão ocupados?',
         ],
@@ -56,11 +56,11 @@ export default class Quiz extends React.Component {
 
   loadQustion = async (i) => {
     options = [
-      "0",
-      "1",
-      "2",
-      "3",
-      "4"
+      "Nunca",
+      "Raramente",
+      "Algumas Vezes",
+      "Frequentemente",
+      "Muito Frenquente"
     ];
     this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
     // console.log(i)
@@ -74,7 +74,7 @@ export default class Quiz extends React.Component {
         question: question,
         idPesquisador: this.state.pesquisador
       }
-      this.props.navigation.navigate('form', {
+      await this.props.navigation.replace('form', {
         respostas: respostas,
         rota: 'Atencao'
       })
@@ -148,10 +148,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   Botao: {
-    backgroundColor: '#268AEC',
+    backgroundColor: '#3B54B8',
     borderRadius: 12,
-    height: 50,
-    width: 110,
+    height: 40,
+    width: 250,
     // alignItems: 'center'
     justifyContent: 'center',
     marginTop: 20,
@@ -181,25 +181,25 @@ const styles = StyleSheet.create({
   escolhido: {
     fontSize: 20,
     color: '#fff',
-    // borderWidth: 2,
+    borderWidth: 2,
     textAlign: 'center',
-    backgroundColor: '#21496B',
+    backgroundColor: '#3B54B8',
     borderRadius: 10,
     // margin: 8,
-    height: 40,
+    // height: 40,
     width: 250,
-    marginTop: 20
-
+    marginTop: 20,
+    borderColor: '#3B54B8',
   },
   naoEscolhido: {
     fontSize: 20,
     color: '#fff',
     borderWidth: 2,
     textAlign: 'center',
-    borderColor: '#21496B',
+    borderColor: '#3B54B8',
     borderRadius: 10,
     // margin: 8,
-    height: 40,
+    // height: 40,
     width: 250,
     alignItems: 'center',
     justifyContent: 'center',

@@ -77,6 +77,7 @@ export default class pages extends Component {
     const db = firebase.database();
     await db.ref(`/${this.state.idPesquisador}/${this.state.rota}`).push(teste)
     await db.ref(`/${this.state.rota}`).push(teste)
+    await this.props.navigation.replace('home')
   }
   render() {
     const { params } = this.props.navigation.state;
@@ -249,7 +250,7 @@ export default class pages extends Component {
           </View>
           {/* <-- pergunta6 ----> */}
           {/* <-- pergunta5 ----> */}
-          <View style={{ marginTop: 15, marginLeft: 10, alignItems: 'center', width: width }}>
+          <View style={{ marginTop: 15, alignItems: 'center', width: width }}>
             <Text style={styles.data}>Data da coleta: </Text>
             <DatePicker
               style={{ width: width - 50 }}

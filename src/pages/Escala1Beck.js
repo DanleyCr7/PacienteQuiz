@@ -187,7 +187,7 @@ export default class Quiz extends React.Component {
         question: question,
         idPesquisador: this.state.pesquisador,
       }
-      await this.props.navigation.navigate('form', {
+      await this.props.navigation.replace('form', {
         respostas: respostas,
         rota: 'Beck'
       })
@@ -271,10 +271,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   Botao: {
-    backgroundColor: '#268AEC',
+    backgroundColor: '#3B54B8',
     borderRadius: 12,
-    height: 50,
-    width: 110,
+    height: 40,
+    width: 250,
     justifyContent: 'center',
     marginTop: 20,
     marginBottom: 30
@@ -288,20 +288,23 @@ const styles = StyleSheet.create({
   escolhido: {
     fontSize: 20,
     color: '#fff',
+    borderWidth: 2,
     textAlign: 'center',
-    backgroundColor: '#21496B',
-    borderRadius: 5,
+    backgroundColor: '#3B54B8',
+    borderRadius: 10,
+    // margin: 8,
+    // height: 40,
     width: 250,
-    marginTop: 20
-
+    marginTop: 20,
+    borderColor: '#3B54B8',
   },
   naoEscolhido: {
     fontSize: 20,
     color: '#fff',
     borderWidth: 2,
     textAlign: 'center',
-    borderColor: '#21496B',
-    borderRadius: 5,
+    borderColor: '#3B54B8',
+    borderRadius: 10,
     // margin: 8,
     // height: 40,
     width: 250,
