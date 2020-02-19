@@ -174,6 +174,7 @@ export default class Quiz extends React.Component {
 
 
   loadQustion = async (i) => {
+    // calculo = calculo + options.lastIndexOf(selected)
     options = this.state.options[i]
     this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
     // console.log(i)

@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import firebase from 'firebase'
 import { RadioButtons } from 'react-native-radio-buttons'
@@ -13,6 +14,7 @@ const { width, height } = Dimensions.get('window')
 var index = -1
 var question = []
 var selected = ''
+var calculo = 1
 var options = []
 export default class Quiz extends React.Component {
   constructor(props) {
@@ -61,6 +63,7 @@ export default class Quiz extends React.Component {
       "Foi muito desagradavél mas pude suportar",
       "Dificilmente pude suportar",
     ]
+    calculo = calculo + options.lastIndexOf(selected)
     this.setState({ Proximo: 'Proximo' })
     // console.log(i)
     await this.setState({ question: this.state.myText[i + 1], nquestion: i + 1, total: this.state.myText.length - 1 });
@@ -77,16 +80,26 @@ export default class Quiz extends React.Component {
     }
     if (i === this.state.myText.length - 1) {
       // this.setState({ Proximo: 'Finalizar' })
-      const respostas = {
-        question: question,
-        idPesquisador: this.state.pesquisador
+      if (calculo <= 10) {
+        Alert.alert('Resultado', 'Grau minimo de ansiedade')
+      } else if (calculo >= 11 && calculo <= 19) {
+        Alert.alert('Resultado', 'Ansiedade leve')
+      } else if (calculo >= 20 && calculo <= 30) {
+        Alert.alert('Resultado', 'Ansiedade moderada')
+      } else if (calculo >= 31 && calculo <= 63) {
+        Alert.alert('Resultado', 'Ansiedade severa')
       }
-      // console.log(teste)
-      await this.props.navigation.replace('form', {
-        respostas: respostas,
-        rota: 'Ansiedade'
-      })
     }
+    //   const respostas = {
+    //     question: question,
+    //     idPesquisador: this.state.pesquisador
+    //   }
+    //   // console.log(teste)
+    //   await this.props.navigation.replace('form', {
+    //     respostas: respostas,
+    //     rota: 'Ansiedade'
+    //   })
+    // }
   }
 
 

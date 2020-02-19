@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 import firebase from 'firebase'
 import { RadioButtons } from 'react-native-radio-buttons'
@@ -15,7 +16,7 @@ var index = -1
 var question = []
 var selected = ''
 var options = [];
-
+var calculo = 1
 export default class Quiz extends React.Component {
   constructor(props) {
     super(props);
@@ -62,6 +63,10 @@ export default class Quiz extends React.Component {
       "Frequentemente",
       "Muito Frenquente"
     ];
+    if (options.lastIndexOf(selected) >= 3) {
+      calculo = calculo + 1
+    }
+
     this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
     // console.log(i)
     await this.setState({ question: this.state.myText[i + 1], nquestion: i + 1, total: this.state.myText.length - 1 });
@@ -70,15 +75,21 @@ export default class Quiz extends React.Component {
       this.setState({ Proximo: 'Finalizar', Anterior: '' })
     }
     if (i === this.state.myText.length - 1) {
-      const respostas = {
-        question: question,
-        idPesquisador: this.state.pesquisador
+      if (calculo >= 8) {
+        Alert.alert('Resultado', 'Tem chances de ser portador de TDAH')
+      } else {
+        Alert.alert('Resultado', 'Chances pequenas de ser portador de TDAH')
       }
-      await this.props.navigation.replace('form', {
-        respostas: respostas,
-        rota: 'Atencao'
-      })
     }
+    //   const respostas = {
+    //     question: question,
+    //     idPesquisador: this.state.pesquisador
+    //   }
+    //   await this.props.navigation.replace('form', {
+    //     respostas: respostas,
+    //     rota: 'Atencao'
+    //   })
+    // }
   }
 
 

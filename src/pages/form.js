@@ -15,6 +15,9 @@ import firebase from 'firebase'
 import fundo from '../../assets/testeFundo.png';
 import gitLab from '../../assets/git.png';
 import DatePicker from 'react-native-datepicker'
+import AsyncStorage from '@react-native-community/async-storage';
+
+
 const { width, height } = Dimensions.get('window')
 import { Colors } from '../config/colors'
 let date = (new Date().getDate() > 10) ? `${new Date().getDate()}` : `0${new Date().getDate()}`
@@ -41,6 +44,21 @@ export default class pages extends Component {
     }
   }
   async componentDidMount() {
+    const nome = await AsyncStorage.getItem('nome')
+    const dataNasc = await AsyncStorage.getItem('dataNasc')
+    const CidEst = await AsyncStorage.getItem('CidEst')
+    const peso = await AsyncStorage.getItem('peso')
+    const altura = await AsyncStorage.getItem('altura')
+    const email = await AsyncStorage.getItem('email')
+    const fone = await AsyncStorage.getItem('fone')
+    const curso = await AsyncStorage.getItem('curso')
+    const periodo = await AsyncStorage.getItem('periodo')
+    const dataColeta = await AsyncStorage.getItem('dataColeta')
+    await this.setState({
+      nome: nome, dataNasc: dataNasc, CidEst: CidEst,
+      peso: peso, altura: altura, email: email, fone: fone, curso: curso, periodo: periodo,
+      dataColeta: dataColeta
+    })
     const ref = firebase.database().ref(`${this.state.idPesquisador}`)
     await ref.on('value', snapshot => {
       const { nome } = snapshot.val();
@@ -73,6 +91,16 @@ export default class pages extends Component {
       resposta: resposta,
       dado: dados
     }
+    await AsyncStorage.setItem('nome', nome)
+    await AsyncStorage.setItem('dataNasc', dataNasc)
+    await AsyncStorage.setItem('CidEst', CidEst)
+    await AsyncStorage.setItem('peso', peso)
+    await AsyncStorage.setItem('altura', altura)
+    await AsyncStorage.setItem('email', email)
+    await AsyncStorage.setItem('fone', fone)
+    await AsyncStorage.setItem('curso', curso)
+    await AsyncStorage.setItem('periodo', periodo)
+    await AsyncStorage.setItem('dataColeta', dataColeta)
     // console.log(teste)
     const db = firebase.database();
     await db.ref(`/${this.state.idPesquisador}/${this.state.rota}`).push(teste)

@@ -7,19 +7,26 @@ import {
   TouchableWithoutFeedback,
   TextInput,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import firebase from 'firebase'
 import { RadioButtons } from 'react-native-radio-buttons'
 import DatePicker from 'react-native-datepicker'
 
 const { width, height } = Dimensions.get('window')
-
+var a = null
+var b = null
+var c = null
+var d = null
 var index = -1
 var question = []
 var selected = ''
 var options = [];
 var horario = ''
+var calculo = 0
+var porcentagem = 0
+var soma = 0
 export default class Quiz extends React.Component {
   constructor(props) {
     super(props);
@@ -71,9 +78,9 @@ export default class Quiz extends React.Component {
   // }
 
   horario = (i) => {
-    if (i <= 4 && i >= 0) {
+    if (i <= 3 && i >= 0) {
       return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginBottom: 20 }}>
           <Text style={{ color: '#fff', fontSize: 20 }}>{horario}</Text>
           <DatePicker
             style={{ width: 80 }}
@@ -109,12 +116,78 @@ export default class Quiz extends React.Component {
       return null;
     }
   }
-  loadQustion = async (i) => {
-    if (i <= 4) {
-      horario = this.state.teste[i]
-      await question.push({ question: this.state.myText[i], resposta: this.state.pergunta1 })
+  calculoB() {
+    if (b <= 15) {
+      calculo = calculo + 0
+    } else if (b >= 16 && b <= 30) {
+      calculo = calculo + 1
+    } else if (b >= 31 && b <= 30) {
+      calculo = calculo + 2
+    } else if (b >= 60) {
+      calculo = calculo + 3
     }
-    if (i === 19) {
+  }
+
+  calculoC() {
+    porcentagem = (d / (c - a)) * 100
+    if (porcentagem > 85) {
+      calculo = calculo + 0
+    } else if (porcentagem > 75 && porcentagem <= 84) {
+      calculo = calculo + 1
+    } else if (porcentagem >= 65 && porcentagem <= 74) {
+      calculo = calculo + 2
+    } else if (porcentagem < 65) {
+      calculo = calculo + 3
+    }
+    // console.log(porcentagem)
+  }
+  calculoD() {
+    if (d / 60 > 7) {
+      calculo = calculo + 0
+    } else if (d / 60 >= 6 && d / 60 <= 7) {
+      calculo = calculo + 1
+    } else if (d / 60 >= 5 && d / 60 <= 6) {
+      calculo = calculo + 2
+    } else if (d / 60 < 5) {
+      calculo = calculo + 3
+    }
+  }
+  loadQustion = async (i) => {
+    if (i <= 4 && i > 0) {
+      /////////
+      // condição de fazer os calculos 
+      if (i == 1) {
+        const { pergunta1 } = this.state;
+
+        var s = pergunta1.split(':');
+        var end = parseInt(s[0]) * 60 + parseInt(s[1]);
+        a = end
+      } else if (i == 2) {
+        const { pergunta1 } = this.state;
+
+        var s = pergunta1.split(':');
+        var end = parseInt(s[0]) * 60 + parseInt(s[1]);
+        b = end
+      } else if (i == 3) {
+        const { pergunta1 } = this.state;
+
+        var s = pergunta1.split(':');
+        var end = parseInt(s[0]) * 60 + parseInt(s[1]);
+        c = end
+      } else if (i == 4) {
+        const { pergunta1 } = this.state;
+
+        var s = pergunta1.split(':');
+        var end = parseInt(s[0]) * 60 + parseInt(s[1]);
+        d = end
+      }
+      // condição de fazer os calculos das horas
+      //////////
+      await this.setState({ pergunta1: '00:00' })
+
+    }
+
+    if (i === 15) {
       options = [
         'muito boa',
         'boa',
@@ -143,22 +216,59 @@ export default class Quiz extends React.Component {
     this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
     await this.setState({ question: this.state.myText[i + 1], nquestion: i + 1, total: this.state.myText.length - 1, horario: options[i] });
     // console.log(i)
+
     if (i > 4) {
-      await question.push({ question: this.state.myText[i], resposta: selected })
-      // console.log(question)
+      if (i === 6) {
+        calculo = calculo + options.lastIndexOf(selected)
+        console.log(calculo)
+      }
+      if (i >= 7 && i <= 15) {
+        soma = soma + options.lastIndexOf(selected)
+        if (i === 13) {
+          console.log(soma)
+          // console.log(calculo)
+          if (soma === 0) {
+            calculo = calculo + 0
+          }
+          else if (soma > 0 && soma <= 9) {
+            calculo = calculo + 1
+          } else if (soma >= 10 && soma <= 18) {
+            calculo = calculo + 2
+          } else if (soma >= 19 && soma <= 27) {
+            calculo = calculo + 3
+          }
+        }
+      }
+      if (i > 15) {
+        calculo = calculo + options.lastIndexOf(selected)
+      }
+      // await question.push({ question: this.state.myText[i], resposta: selected })
+      // console.log(selected)
       if (i === this.state.myText.length - 2) {
         this.setState({ Proximo: 'Finalizar', Anterior: '' })
       }
       if (i === this.state.myText.length - 1) {
-        const respostas = {
-          question: question,
-          idPesquisador: this.state.pesquisador
-        }
-        // console.log(question)
-        await this.props.navigation.replace('form', {
-          respostas: respostas,
-          rota: 'Pisttsburgh'
-        })
+        await this.calculoC()
+        await this.calculoD()
+        Alert.alert('Resultado', `só falta saber a condição para o valor ${calculo}`)
+        // if (calculo <= 9) {
+        //   Alert.alert('Resultado', 'Não está deprimido')
+        // } else if (calculo >= 10 && calculo <= 18) {
+        //   Alert.alert('Resultado', 'Depressão leve')
+        // } else if (calculo >= 19 && calculo <= 29) {
+        //   Alert.alert('Resultado', 'Depressão moderada')
+        // } else if (calculo >= 30 && calculo <= 63) {
+        //   Alert.alert('Resultado', 'Depressão severa')
+        // }
+        // const respostas = {
+        //   question: question,
+        //   idPesquisador: this.state.pesquisador
+        // }
+        // // console.log(question)
+        // await this.props.navigation.replace('form', {
+        //   respostas: respostas,
+        //   rota: 'Pisttsburgh'
+        // })
       }
     }
 
@@ -322,6 +432,13 @@ const styles = StyleSheet.create({
     marginTop: 25,
     alignItems: 'center',
     marginBottom: 25,
+  },
+  input: {
+    fontSize: 14,
+    color: '#8F98C1',
+    borderColor: '#8F98C1',
+    borderBottomWidth: 1,
+    width: width - 40
   },
 });
 

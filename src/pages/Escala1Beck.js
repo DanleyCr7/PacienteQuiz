@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 import firebase from 'firebase'
 import { RadioButtons } from 'react-native-radio-buttons'
@@ -16,13 +17,13 @@ var index = -1
 var selected = ''
 var options = []
 var question = []
+var calculo = 1
 export default class Quiz extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       myText:
         [
-
           [
             'Não me sinto triste',
             'me sinto triste',
@@ -33,13 +34,13 @@ export default class Quiz extends React.Component {
             'Não estou especialmente desanimado quanto ao futuro',
             'Eu me sinto desanimado quanto ao futuro',
             'Acho que nada tenho a esperar',
-            'Acho o futuro sem esoeranças e tenho a impressão de que as coisas não podem melhorar'
+            'Acho o futuro sem esperanças e tenho a impressão de que as coisas não podem melhorar'
           ],
           [
             'Não me sinto um fracasso',
             'Acho que fracassei mais do que uma pessoa comum',
             'Quando olho pra trás, na minha vida, tudo o que posso ver é um monte de fracasssos',
-            'Acho que, como pessoa, sou um completo fracasso'
+            'Acho que, como pessoa, sou um completo fracasso',
           ],
           [
             'tenho prazer em tudo como antes',
@@ -168,38 +169,37 @@ export default class Quiz extends React.Component {
 
   loadQustion = async (i) => {
     this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
-    // console.log(i)
+    calculo = calculo + options.lastIndexOf(selected)
+    // console.log(calculo)
     options = this.state.myText[i]
     await this.setState({ nquestion: i + 1, total: this.state.myText.length - 1 });
-    await question.push({ question: selected })
+
+    // await question.push({ question: selected })
+    // if (selected == 'Não me sinto triste') {
+    //   console.log(1)
+    // }
+
     if (i === this.state.myText.length - 2) {
       this.setState({ Proximo: 'Finalizar', Anterior: '' })
-      // const teste = {
-      // 	question: question
-      // }
-      // console.log(teste)
-      // const db = firebase.database();
-      // db.ref(`/Edinburgh`).push(teste)
     }
     if (i === this.state.myText.length - 1) {
       // this.setState({ Proximo: 'Finalizar' })
-      const respostas = {
-        question: question,
-        idPesquisador: this.state.pesquisador,
+      if (calculo <= 9) {
+        Alert.alert('Resultado', 'Não está deprimido')
+      } else if (calculo >= 10 && calculo <= 18) {
+        Alert.alert('Resultado', 'Depressão leve')
+      } else if (calculo >= 19 && calculo <= 29) {
+        Alert.alert('Resultado', 'Depressão moderada')
+      } else if (calculo >= 30 && calculo <= 63) {
+        Alert.alert('Resultado', 'Depressão severa')
       }
-      await this.props.navigation.replace('form', {
-        respostas: respostas,
-        rota: 'Beck'
-      })
-
       // const respostas = {
       //   question: question,
-      //   idPesquisador: this.state.pesquisador
+      //   idPesquisador: this.state.pesquisador,
       // }
-      // // console.log(teste)
-      // this.props.navigation.navigate('form', {
+      // await this.props.navigation.replace('form', {
       //   respostas: respostas,
-      //   rota: 'Edinburgh'
+      //   rota: 'Beck'
       // })
     }
 
@@ -215,7 +215,7 @@ export default class Quiz extends React.Component {
 
     function setSelectedOption(selectedOption) {
       selected = selectedOption
-      // console.log(selected)
+      // console.log(options.lastIndexOf(selected))
     }
 
     function renderOption(option, selected, onSelect, index) {
