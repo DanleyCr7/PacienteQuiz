@@ -13,7 +13,7 @@ import {
 import firebase from 'firebase'
 import { RadioButtons } from 'react-native-radio-buttons'
 import DatePicker from 'react-native-datepicker'
-
+import AsyncStorage from '@react-native-community/async-storage';
 const { width, height } = Dimensions.get('window')
 var a = null
 var b = null
@@ -24,6 +24,10 @@ var question = []
 var selected = ''
 var options = [];
 var horario = ''
+var horarioA = ''
+var horario1 = ''
+var horario2 = ''
+var horario3 = ''
 var calculo = 0
 var porcentagem = 0
 var soma = 0
@@ -73,10 +77,6 @@ export default class Quiz extends React.Component {
       horario: '',
     }
   }
-  // setHorario = async (i) => {
-  //   await this.setState({ horario: this.state.teste[i + 1] });
-  // }
-
   horario = (i) => {
     if (i <= 3 && i >= 0) {
       return (
@@ -116,77 +116,131 @@ export default class Quiz extends React.Component {
       return null;
     }
   }
-  calculoB() {
+
+  async calculoB() {
+    //calcula o valor da segunda questão
+    await question.push({ question: this.state.myText[1], resposta: horarioA, peso: 0 })
     if (b <= 15) {
-      calculo = calculo + 0
+      // calculo = calculo + 0
+      await question.push({ question: this.state.myText[2], resposta: horario1, peso: 0 })
+      // console.log(0, this.state.pergunta1)
+
     } else if (b >= 16 && b <= 30) {
-      calculo = calculo + 1
+      // calculo = calculo + 1
+      await question.push({ question: this.state.myText[2], resposta: horario1, peso: 1 })
+      // console.log(1, this.state.pergunta1)
+
     } else if (b >= 31 && b <= 30) {
-      calculo = calculo + 2
+      // calculo = calculo + 2
+      await question.push({ question: this.state.myText[2], resposta: horario1, peso: 2 })
+      // console.log(2, this.state.pergunta1)
+
     } else if (b >= 60) {
-      calculo = calculo + 3
+      // calculo = calculo + 3
+      await question.push({ question: this.state.myText[2], resposta: horario1, peso: 3 })
+      // console.log(3, this.state.pergunta1)
+
     }
+    //calcula o valor da segunda questão
+    // console.log(b)
   }
 
-  calculoC() {
-    porcentagem = (d / (c - a)) * 100
+  async calculoC() {
+    //calcula o valor da 3 questão
+    if (a < 24) {
+      porcentagem = (d / (c + (24 - a))) * 100
+    } if (a > 24) {
+      porcentagem = (d / (c + (24 - a))) * 100
+    }
     if (porcentagem > 85) {
-      calculo = calculo + 0
+      // calculo = calculo + 0
+      await question.push({ question: this.state.myText[3], resposta: horario2, peso: 0 })
+      // console.log(0, this.state.pergunta1)
+
     } else if (porcentagem > 75 && porcentagem <= 84) {
-      calculo = calculo + 1
+      // calculo = calculo + 1
+      await question.push({ question: this.state.myText[3], resposta: horario2, peso: 1 })
+      // console.log(1, this.state.pergunta1)
+
     } else if (porcentagem >= 65 && porcentagem <= 74) {
-      calculo = calculo + 2
+      // calculo = calculo + 2
+      await question.push({ question: this.state.myText[3], resposta: horario2, peso: 2 })
+      // console.log(2, this.state.pergunta1)
+
     } else if (porcentagem < 65) {
-      calculo = calculo + 3
+      // calculo = calculo + 3
+      await question.push({ question: this.state.myText[3], resposta: horario2, peso: 3 })
+      // console.log(3, this.state.pergunta1)
+
     }
     // console.log(porcentagem)
   }
-  calculoD() {
-    if (d / 60 > 7) {
-      calculo = calculo + 0
-    } else if (d / 60 >= 6 && d / 60 <= 7) {
-      calculo = calculo + 1
-    } else if (d / 60 >= 5 && d / 60 <= 6) {
-      calculo = calculo + 2
-    } else if (d / 60 < 5) {
-      calculo = calculo + 3
+  async calculoD() {
+    //calcula o valor da quarta questão
+    let cal = d / 60
+    if (cal > 7) {
+      // calculo = calculo + 0
+      await question.push({ question: this.state.myText[4], resposta: horario3, peso: 0 })
+      // console.log(0, this.state.pergunta1)
+    } else if (cal >= 6 && cal <= 7) {
+      // calculo = calculo + 1
+      await question.push({ question: this.state.myText[4], resposta: horario3, peso: 1 })
+      // console.log(1, this.state.pergunta1)
+    } else if (cal >= 5 && cal <= 6) {
+      // calculo = calculo + 2
+      await question.push({ question: this.state.myText[4], resposta: horario3, peso: 2 })
+      // console.log(2, this.state.pergunta1)
+    } else if (cal < 5) {
+      // calculo = calculo + 3
+      await question.push({ question: this.state.myText[4], resposta: horario3, peso: 3 })
+      // console.log(3, this.state.pergunta1)
     }
+
   }
   loadQustion = async (i) => {
-    if (i <= 4 && i > 0) {
+    if (i <= 5 && i >= 0) {
       /////////
       // condição de fazer os calculos 
       if (i == 1) {
         const { pergunta1 } = this.state;
-
+        horarioA = pergunta1
         var s = pergunta1.split(':');
         var end = parseInt(s[0]) * 60 + parseInt(s[1]);
-        a = end
+        a = end / 60
+
       } else if (i == 2) {
         const { pergunta1 } = this.state;
-
+        horario1 = pergunta1
         var s = pergunta1.split(':');
         var end = parseInt(s[0]) * 60 + parseInt(s[1]);
-        b = end
+        b = end / 60
       } else if (i == 3) {
         const { pergunta1 } = this.state;
-
+        horario2 = pergunta1
         var s = pergunta1.split(':');
         var end = parseInt(s[0]) * 60 + parseInt(s[1]);
-        c = end
+        c = end / 60
       } else if (i == 4) {
         const { pergunta1 } = this.state;
-
+        horario3 = pergunta1
         var s = pergunta1.split(':');
         var end = parseInt(s[0]) * 60 + parseInt(s[1]);
-        d = end
+        d = end / 60
+      }
+      if (i == 5) {
+        await this.calculoB()
+        await this.calculoC()
+        await this.calculoD()
       }
       // condição de fazer os calculos das horas
       //////////
       await this.setState({ pergunta1: '00:00' })
 
     }
-
+    let pesoSelected = options.indexOf(selected)
+    if (i >= 6) {
+      await question.push({ question: this.state.myText[i], resposta: selected, peso: pesoSelected })
+    }
     if (i === 15) {
       options = [
         'muito boa',
@@ -210,76 +264,25 @@ export default class Quiz extends React.Component {
         'Indisposição e falta de entusiasmo',
       ]
     }
-    //  else if (i <= 5) {
-    //   this.setState({ horario: this.state.teste[i] })
-    // }
+
     this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
-    await this.setState({ question: this.state.myText[i + 1], nquestion: i + 1, total: this.state.myText.length - 1, horario: options[i] });
-    // console.log(i)
+    await this.setState({ question: this.state.myText[i + 1], nquestion: i + 1, total: this.state.myText.length - 1 });
 
-    if (i > 4) {
-      if (i === 6) {
-        calculo = calculo + options.lastIndexOf(selected)
-        console.log(calculo)
-      }
-      if (i >= 7 && i <= 15) {
-        soma = soma + options.lastIndexOf(selected)
-        if (i === 13) {
-          console.log(soma)
-          // console.log(calculo)
-          if (soma === 0) {
-            calculo = calculo + 0
-          }
-          else if (soma > 0 && soma <= 9) {
-            calculo = calculo + 1
-          } else if (soma >= 10 && soma <= 18) {
-            calculo = calculo + 2
-          } else if (soma >= 19 && soma <= 27) {
-            calculo = calculo + 3
-          }
-        }
-      }
-      if (i > 15) {
-        calculo = calculo + options.lastIndexOf(selected)
-      }
-      // await question.push({ question: this.state.myText[i], resposta: selected })
-      // console.log(selected)
-      if (i === this.state.myText.length - 2) {
-        this.setState({ Proximo: 'Finalizar', Anterior: '' })
-      }
-      if (i === this.state.myText.length - 1) {
-        await this.calculoC()
-        await this.calculoD()
-        Alert.alert('Resultado', `só falta saber a condição para o valor ${calculo}`)
-        // if (calculo <= 9) {
-        //   Alert.alert('Resultado', 'Não está deprimido')
-        // } else if (calculo >= 10 && calculo <= 18) {
-        //   Alert.alert('Resultado', 'Depressão leve')
-        // } else if (calculo >= 19 && calculo <= 29) {
-        //   Alert.alert('Resultado', 'Depressão moderada')
-        // } else if (calculo >= 30 && calculo <= 63) {
-        //   Alert.alert('Resultado', 'Depressão severa')
-        // }
-        // const respostas = {
-        //   question: question,
-        //   idPesquisador: this.state.pesquisador
-        // }
-        // // console.log(question)
-        // await this.props.navigation.replace('form', {
-        //   respostas: respostas,
-        //   rota: 'Pisttsburgh'
-        // })
-      }
+    if (i === this.state.myText.length - 2) {
+      this.setState({ Proximo: 'Finalizar', Anterior: '' })
     }
-
+    if (i === this.state.myText.length - 1) {
+      const { params } = this.props.navigation.state
+      await this.props.navigation.replace('form', {
+        question: question,
+        escala: 'Pisttsburgh',
+        idPesquisador: params.id
+      })
+    }
   }
 
 
   render() {
-    const { params } = this.props.navigation.state;
-    this.state.pesquisador = params.pisttsburgh
-    // console.log(this.state.myText.length)
-
     function setSelectedOption(selectedOption) {
       selected = selectedOption
       // console.log(selected)

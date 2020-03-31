@@ -1,7 +1,6 @@
 import React from 'react';
 import Router from './Router';
-// console.disableYellowBox = true;
-
+console.disableYellowBox = true;
 
 const serieApp = () => (
   <Router />

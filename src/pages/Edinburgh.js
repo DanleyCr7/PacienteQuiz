@@ -7,7 +7,7 @@ import {
 	TouchableWithoutFeedback,
 	Dimensions
 } from 'react-native';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'firebase'
 import { RadioButtons } from 'react-native-radio-buttons'
 const { width, height } = Dimensions.get('window')
@@ -36,7 +36,7 @@ export default class Quiz extends React.Component {
 					'Para usar a chave de fenda ?',
 					'Com que mão você segura uma faca para comer, ao mesmo tempo que o garfo?',
 					'Se tiver duas malas, com que mão segura a mais pesada?',
-					'Ao varrer, qual a mao que fica por cima, no cabo da vassoura?',
+					'Ao varrer, qual a mão que fica por cima, no cabo da vassoura?',
 					'E no cabo da ancinho (CISCADOR)',
 					'Que mão você usa para desenroscar a tampa de um frasco?',
 					'Com que mão você segura um fosforo para acendê-lo?',
@@ -58,46 +58,36 @@ export default class Quiz extends React.Component {
 
 
 	loadQustion = async (i) => {
+		let pesoSelected = options.indexOf(selected)
 		this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
 		options = [
 			"Esquerda",
 			"Direita"
 		];
+
 		// console.log(i)
 		await this.setState({ question: this.state.myText[i + 1], nquestion: i + 1, total: this.state.myText.length - 1 });
-		await question.push({ question: this.state.myText[i], resposta: selected })
+
+		if (pesoSelected >= 0) {
+			await question.push({ question: this.state.myText[i], resposta: selected, peso: pesoSelected })
+		}
 		// console.log(question)
 		if (i === this.state.myText.length - 2) {
 			this.setState({ Proximo: 'Finalizar', Anterior: '' })
-			// const teste = {
-			// 	question: question
-			// }
-			// console.log(teste)
-			// const db = firebase.database();
-			// db.ref(`/Edinburgh`).push(teste)
 		}
 		if (i === this.state.myText.length - 1) {
-			// this.setState({ Proximo: 'Finalizar' })
-			const respostas = {
-				question: question,
-				idPesquisador: this.state.pesquisador
-			}
-			// console.log(teste)
+			const { params } = this.props.navigation.state
 			await this.props.navigation.replace('form', {
-				respostas: respostas,
-				rota: 'Edinburgh'
+				question: question,
+				escala: 'Edinburgh',
+				idPesquisador: params.id
 			})
-			await this.setState({ question: [0], nquestion: null })
 		}
 
 	}
 
 
 	render() {
-		const { params } = this.props.navigation.state;
-		this.state.pesquisador = params.edinburgh
-
-
 		function setSelectedOption(selectedOption) {
 			selected = selectedOption
 			// console.log(selected)

@@ -10,6 +10,7 @@ import {
   Alert
 } from 'react-native';
 import firebase from 'firebase'
+import AsyncStorage from '@react-native-community/async-storage';
 import { RadioButtons } from 'react-native-radio-buttons'
 const { width, height } = Dimensions.get('window')
 var index = -1
@@ -29,9 +30,9 @@ export default class Quiz extends React.Component {
           'Com que frequência você tem dificuldade para se concetrar no que as pessoas dizem, mesmo quando elas estão falando diretamente com você?',
           'Com que frequência você deixa um projeto pela metade depois de já ter feito as partes mais dificeis?',
           'Com que frequência você tem dificuldade para fazer um trabalho que exige organização?',
-          'Quando você precisa fazer algo que exige muita concectração, com que frenquência você evita ou adia?',
+          'Quando você precisa fazer algo que exige muita concentração, com que frenquência você evita ou adia?',
           'Com que frequência você coloca as coisas fora do lugar ou tem dificuldade para encontrar as coisas em casa ou no trabalho?',
-          'Com que frequência você se distrai com atividades ou barulho á sua volta?',
+          'Com que frequência você se distrai com atividades ou barulho a sua volta?',
           'Com que frequência você tem dificuldade para lembrar de compromissos ou obrigações?',
           //parte b
           'Com que frequência você fica se mexendo na cadeira ou balançando as mãos ou os pés quando precisa ficar sentado(a) por muito tempo?',
@@ -56,6 +57,11 @@ export default class Quiz extends React.Component {
 
 
   loadQustion = async (i) => {
+    let pesoSelected = options.indexOf(selected)
+    if (pesoSelected >= 0) {
+      calculo = calculo + pesoSelected
+      console.log(calculo)
+    }
     options = [
       "Nunca",
       "Raramente",
@@ -63,40 +69,28 @@ export default class Quiz extends React.Component {
       "Frequentemente",
       "Muito Frenquente"
     ];
-    if (options.lastIndexOf(selected) >= 3) {
-      calculo = calculo + 1
-    }
 
     this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
     // console.log(i)
     await this.setState({ question: this.state.myText[i + 1], nquestion: i + 1, total: this.state.myText.length - 1 });
-    await question.push({ question: this.state.myText[i], resposta: selected })
+    if (pesoSelected >= 0) {
+      await question.push({ question: this.state.myText[i], resposta: selected, peso: pesoSelected })
+    }
     if (i === this.state.myText.length - 2) {
       this.setState({ Proximo: 'Finalizar', Anterior: '' })
     }
     if (i === this.state.myText.length - 1) {
-      if (calculo >= 8) {
-        Alert.alert('Resultado', 'Tem chances de ser portador de TDAH')
-      } else {
-        Alert.alert('Resultado', 'Chances pequenas de ser portador de TDAH')
-      }
+      const { params } = this.props.navigation.state
+      await this.props.navigation.replace('form', {
+        question: question,
+        escala: 'Atencao',
+        idPesquisador: params.id
+      })
     }
-    //   const respostas = {
-    //     question: question,
-    //     idPesquisador: this.state.pesquisador
-    //   }
-    //   await this.props.navigation.replace('form', {
-    //     respostas: respostas,
-    //     rota: 'Atencao'
-    //   })
-    // }
   }
 
 
   render() {
-    const { params } = this.props.navigation.state;
-    this.state.pesquisador = params.atencao
-
     function setSelectedOption(selectedOption) {
       selected = selectedOption
       // console.log(selected)

@@ -9,6 +9,7 @@ import {
   Image,
   TextInput,
   Dimensions,
+  Alert
 } from 'react-native';
 import firebase from 'firebase'
 // import { Container } from './styles';
@@ -37,99 +38,77 @@ export default class pages extends Component {
       curso: '',
       periodo: '',
       dataColeta: `${date}-${month}-${year}`,
-      idPesquisador: '',
       resposta: [],
       rota: '',
-      nomePesquisador: ''
+      nomePesquisador: '',
+      escala: '',
+      profissao: ''
     }
   }
+  limparDados() {
+    Alert.alert('Atenção', 'Tem certeza que deseja limpar a informações inseridas?',
+      [{
+        text: 'Não',
+        onPress: () => {
+        },
+      }, {
+        text: 'Sim',
+        onPress: async () => {
+          this.setState({
+            nome: '', dataNasc: '', CidEst: '',
+            peso: '', altura: '', email: '', fone: '', curso: '', periodo: '', profissao: ''
+          })
+        },
+      }])
+  }
   async componentDidMount() {
-    const nome = await AsyncStorage.getItem('nome')
-    const dataNasc = await AsyncStorage.getItem('dataNasc')
-    const CidEst = await AsyncStorage.getItem('CidEst')
-    const peso = await AsyncStorage.getItem('peso')
-    const altura = await AsyncStorage.getItem('altura')
-    const email = await AsyncStorage.getItem('email')
-    const fone = await AsyncStorage.getItem('fone')
-    const curso = await AsyncStorage.getItem('curso')
-    const periodo = await AsyncStorage.getItem('periodo')
-    const dataColeta = await AsyncStorage.getItem('dataColeta')
-    await this.setState({
-      nome: nome, dataNasc: dataNasc, CidEst: CidEst,
-      peso: peso, altura: altura, email: email, fone: fone, curso: curso, periodo: periodo,
-      dataColeta: dataColeta
+    const { navigation } = this.props;
+    const { idPesquisador } = navigation.state.params;
+    const ref = await firebase.database().ref(`${idPesquisador}/dados`)
+    await ref.on('value', async (snapshot) => {
+      const dados = snapshot.toJSON();
+      // const item = JSON.parse(dados);
+      this.setState({ nomePesquisador: dados.nome })
+      // console.log(dados.nome)
     })
-    const ref = firebase.database().ref(`${this.state.idPesquisador}`)
-    await ref.on('value', snapshot => {
-      const { nome } = snapshot.val();
-      this.setState({ nomePesquisador: nome })
-      // console.log(nome)
-    })
+
+    const dado = await AsyncStorage.getItem('dados')
+    const itens = JSON.parse(dado);
+    if (itens) {
+      await this.setState({
+        nome: itens.nome, dataNasc: itens.dataNasc, CidEst: itens.CidEst,
+        peso: itens.peso, altura: itens.altura, email: itens.email, fone: itens.fone, curso: itens.curso, periodo: itens.periodo,
+        profissao: itens.profissao
+      })
+    }
   }
   async cad() {
     const { nome, dataNasc, CidEst,
       peso, altura, email, fone, curso, periodo,
-      dataColeta, idPesquisador, resposta
+      dataColeta, profissao, nomePesquisador
     } = this.state
-    // console.log(respostas)
+    const { navigation } = this.props;
+    const { escala, question, idPesquisador } = navigation.state.params;
     const dados = {
-      nome: nome,
-      dataNasc: dataNasc,
-      CidEst: CidEst,
-      peso: peso,
-      altura: altura,
-      email: email,
-      fone: fone,
-      curso: curso,
-      periodo: periodo,
-      dataColeta: dataColeta,
-      idPesquisador: this.state.idPesquisador,
-      nomePesquisador: this.state.nomePesquisador
+      nome, profissao, dataNasc, CidEst,
+      peso, altura, email, fone, curso, periodo,
+      dataColeta, idPesquisador, nomePesquisador
     }
 
-    const teste = {
-      resposta: resposta,
-      dado: dados
-    }
-    await AsyncStorage.setItem('nome', nome)
-    await AsyncStorage.setItem('dataNasc', dataNasc)
-    await AsyncStorage.setItem('CidEst', CidEst)
-    await AsyncStorage.setItem('peso', peso)
-    await AsyncStorage.setItem('altura', altura)
-    await AsyncStorage.setItem('email', email)
-    await AsyncStorage.setItem('fone', fone)
-    await AsyncStorage.setItem('curso', curso)
-    await AsyncStorage.setItem('periodo', periodo)
-    await AsyncStorage.setItem('dataColeta', dataColeta)
     // console.log(teste)
+    const teste = {
+      dado: dados,
+      resposta: question
+    }
     const db = firebase.database();
-    await db.ref(`/${this.state.idPesquisador}/${this.state.rota}`).push(teste)
-    await db.ref(`/${this.state.rota}`).push(teste)
+    await db.ref(`/${idPesquisador}/${escala}`).push(teste)
+    await db.ref(`/${escala}`).push(teste)
+    await AsyncStorage.setItem('dados', JSON.stringify(dados));
     await this.props.navigation.replace('home')
   }
   render() {
-    const { params } = this.props.navigation.state;
-    const { respostas, rota } = params;
-    const { idPesquisador } = respostas
-    this.state.idPesquisador = idPesquisador
-    this.state.resposta = respostas
-    this.state.rota = rota
-    // console.log()
-    // console.log(respostas)
     return (
       <View style={styles.container}>
-        {/* <Image
-          style={{ height: '50%', width: '100%', marginTop: -120 }}
-          source={fundo}
-        // aspectRatio={1}
-        // resizeMode='stretch'
-        />
-        <Image
-          style={{ height: 120, width: 180, marginTop: -110 }}
-          source={gitLab}
-          aspectRatio={1}
-        // resizeMode='stretch'
-        /> */}
         <ScrollView>
           {/* <-- pergunta ----> */}
           <View style={styles.View}>
@@ -141,6 +120,18 @@ export default class pages extends Component {
               placeholderTextColor={Colors.TEXT}
               value={this.state.nome}
               onChangeText={nome => this.setState({ nome })}
+            />
+          </View>
+          {/* <-- pergunta ----> */}
+          <View style={styles.View}>
+            <TextInput
+              style={styles.input}
+              autoCorrect={false}
+              autoCapitalize='none'
+              placeholder='Profissão'
+              placeholderTextColor={Colors.TEXT}
+              value={this.state.profissao}
+              onChangeText={profissao => this.setState({ profissao })}
             />
           </View>
           {/* <-- pergunta ----> */}
@@ -277,43 +268,12 @@ export default class pages extends Component {
             />
           </View>
           {/* <-- pergunta6 ----> */}
-          {/* <-- pergunta5 ----> */}
-          <View style={{ marginTop: 15, alignItems: 'center', width: width }}>
-            <Text style={styles.data}>Data da coleta: </Text>
-            <DatePicker
-              style={{ width: width - 50 }}
-              date={this.state.dataColeta}
-              androidMode="spinner"
-              format="DD-MM-YYYY"
-              minDate="01-01-1970"
-              maxDate="01-01-2050"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: 'absolute',
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0
-                },
-                dateInput: {
-                  // marginLeft: 36,
-                  borderColor: '#3B54B8',
-                  alignItems: 'center'
-                },
-                dateText: {
-                  color: '#3B54B8',
-                  textAlign: 'center',
-                },
-                // ... You can check the source to find the other keys.
-              }}
-              onDateChange={(date) => { this.setState({ dataColeta: date }) }}
-            />
-          </View>
-          {/* <-- pergunta5 ----> */}
           <View style={{ alignItems: 'center' }}>
             <TouchableOpacity style={styles.buttonLogin} onPress={() => this.cad()}>
-              <Text style={styles.textButton}>Finalizar Questionário</Text>
+              <Text style={styles.textButton}>Finalizar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.Limpar} onPress={() => this.limparDados()}>
+              <Text style={styles.textButton}>Limpar dados</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -365,6 +325,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // borderWidth: 3,
     borderColor: '#000',
+    marginBottom: 20
+  },
+  Limpar: {
+    height: 40,
+    width: width - 40,
+    backgroundColor: '#eb4c34',
+    // marginTop: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // borderWidth: 3,
+    borderColor: '#000',
     marginBottom: 30
   },
   textButton: {
@@ -377,7 +349,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     justifyContent: 'space-between',
     // alignItems: 'center',
-    marginTop: 20
+    marginTop: 10
   },
   View2: {
     flexDirection: 'row',

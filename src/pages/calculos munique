@@ -1,0 +1,311 @@
+cal1() {
+    const { pergunta3, pergunta4, pergunta1 } = this.state;
+
+    var s = pergunta3.split(':');
+    var e = pergunta1.split(':');
+
+    var end = parseInt(e[0]) * 60 + parseInt(e[1]);
+    console.log('Variavel de teste', end)
+    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
+    // console.log(start)
+    var Sosent = (((start - pergunta4) - 1440) / 60)
+    console.log('Sonset', Sosent)
+    var sign = Sosent >= 0 ? 1 : -1;
+    var min = 1 / 60;
+    // Get positive value of num
+    Sosent = Sosent * sign;
+    // Separate the int from the decimal part
+    var intpart = Math.floor(Sosent);
+    // console.log('Parte inteira', intpart)
+    var decpart = Sosent - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    cal1 = sign + intpart + 'h' + minutes;
+    calculo1 = (intpart * 60) + minutes
+
+    // console.log('Cal 1', cal1)
+    // console.log('Calculo 1', calculo1)
+  }
+  cal2() {
+    const { pergunta9, pergunta10 } = this.state;
+
+    var s = pergunta9.split(':');
+    // var e = pergunta4.split(':');
+
+    // var end = parseInt(e[0]) * 60 + parseInt(e[1]);
+    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
+    // console.log(start)
+    var Sosent = (((start - pergunta10) - 1440) / 60)
+    console.log('SonsetF', Sosent)
+    var sign = Sosent >= 0 ? 1 : -1;
+    var min = 1 / 60;
+
+    // Get positive value of num
+    Sosent = Sosent * sign;
+
+    // Separate the int from the decimal part
+    var intpart = Math.floor(Sosent);
+    // console.log('Parte inteira', intpart)
+    var decpart = Sosent - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // console.log('Transformada em minutos', minutes)
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    // pad() adds a leading zero if needed
+    cal2 = sign + intpart + 'h' + minutes
+    calculo2 = (intpart * 60) + minutes;
+    // console.log('Calc 2', cal2)
+    // console.log('Calculo 2', calculo2)
+  }
+
+  cal3() {
+    const { pergunta5 } = this.state;
+
+    var s = pergunta5.split(':');
+
+    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
+
+    calculo3 = (start - calculo1) / 60
+    console.log('SDt', calculo3)
+    var sign = calculo3 >= 0 ? 1 : -1;
+    var min = 1 / 60;
+
+    // Get positive value of num
+    calculo3 = calculo3 * sign;
+
+    // Separate the int from the decimal part
+    var intpart = Math.floor(calculo3);
+    // console.log('Parte inteira', intpart)
+    var decpart = calculo3 - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // console.log('Transformada em minutos', minutes)
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    // pad() adds a leading zero if needed
+    console.log('->', sign)
+    cal3 = sign + intpart + 'h' + minutes;
+    calculo3 = (intpart * 60) + minutes
+    // console.log('Calc 3', cal3)
+    // console.log('calculo 3', calculo3)
+  }
+  cal4() {
+    const { pergunta5 } = this.state;
+    var s = pergunta5.split(':');
+
+    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
+
+    calculo4 = ((calculo1 + start) / 2) / 60
+    console.log('sdF', calculo4)
+    var sign = calculo4 >= 0 ? 1 : -1;
+    var min = 1 / 60;
+
+    // Get positive value of num
+    calculo3 = calculo4 * sign;
+
+    // Separate the int from the decimal part
+    var intpart = Math.floor(calculo4);
+    // console.log('Parte inteira', intpart)
+    var decpart = calculo4 - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // console.log('Transformada em minutos', minutes)
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    // pad() adds a leading zero if needed
+    console.log('->', sign)
+    cal4 = sign + intpart + 'h' + minutes;
+    calculo4 = (intpart * 60) + minutes
+    // console.log('Calc 4', cal4)
+    // console.log('calculo 4', calculo4)
+  }
+
+  cal6() {
+    const { pergunta11 } = this.state;
+
+    var s = pergunta11.split(':');
+
+    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
+
+    calculo6 = (start - calculo2) / 60
+    console.log(calculo6)
+    var sign = calculo6 >= 0 ? 1 : -1;
+    var min = 1 / 60;
+
+    // Get positive value of num
+    calculo6 = calculo6 * sign;
+
+    // Separate the int from the decimal part
+    var intpart = Math.floor(calculo6);
+    // console.log('Parte inteira', intpart)
+    var decpart = calculo6 - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // console.log('Transformada em minutos', minutes)
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    // pad() adds a leading zero if needed
+    console.log('->', sign)
+    cal6 = sign + intpart + 'h' + minutes;
+    calculo6 = (intpart * 60) + minutes
+    // console.log('Calc 6', cal6)
+    // console.log('calculo 6', calculo6)
+  }
+  cal9() {
+    const { pergunta11 } = this.state;
+    var s = pergunta11.split(':');
+
+    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
+
+    calculo9 = ((start + calculo2) / 2) / 60
+    console.log(calculo9)
+    var sign = calculo9 >= 0 ? 1 : -1;
+    var min = 1 / 60;
+
+    // Get positive value of num
+    calculo9 = calculo9 * sign;
+
+    // Separate the int from the decimal part
+    var intpart = Math.floor(calculo9);
+    // console.log('Parte inteira', intpart)
+    var decpart = calculo9 - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // console.log('Transformada em minutos', minutes)
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    // pad() adds a leading zero if needed
+    console.log('->', sign)
+    cal9 = sign + intpart + 'h' + minutes;
+    calculo9 = (intpart * 60) + minutes
+    // console.log('Calc 9', cal9)
+    // console.log('calculo 9', calculo9)
+  }
+
+  cal5() {
+    calculo5 = (((calculo3 * (selected * 1440)) + (calculo6 * ((7 - selected) * 1440))) / 10080) / 60
+    var sign = calculo5 >= 0 ? 1 : -1;
+    var min = 1 / 60;
+    console.log(calculo5)
+    // Get positive value of num
+    calculo5 = calculo5 * sign;
+    // Separate the int from the decimal part
+    var intpart = Math.floor(calculo5);
+    // console.log('Parte inteira', intpart)
+    var decpart = calculo5 - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    cal5 = sign + intpart + 'h' + minutes;
+    calculo5 = (intpart * 60) + minutes
+
+    // console.log('Cal 5', cal5)
+    // console.log('Calculo 5', calculo5)
+  }
+  cal7() {
+    calculo7 = ((calculo4 * 0, 5 * (calculo6 - calculo5)) / 2) / 60
+    var sign = calculo7 >= 0 ? 1 : -1;
+    var min = 1 / 60;
+    // Get positive value of num
+    calculo7 = calculo7 * sign;
+    // Separate the int from the decimal part
+    var intpart = Math.floor(calculo7);
+    // console.log('Parte inteira', intpart)
+    var decpart = calculo7 - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    cal7 = sign + intpart + 'h' + minutes;
+    calculo7 = (intpart * 60) + minutes
+
+    // console.log('Cal 7', cal7)
+    // console.log('Calculo 7', calculo7)
+  }
+  cal8() {
+    calculo8 = (calculo4 - calculo9) / 60
+    var sign = calculo7 >= 0 ? 1 : -1;
+    var min = 1 / 60;
+    // Get positive value of num
+    calculo8 = calculo8 * sign;
+    // Separate the int from the decimal part
+    var intpart = Math.floor(calculo8);
+    // console.log('Parte inteira', intpart)
+    var decpart = calculo8 - intpart;
+    // Round to nearest minute
+    decpart = min * Math.round(decpart / min);
+    // console.log('Parte flutuante', decpart)
+    var minutes = Math.floor(decpart * 60);
+    // Sign result
+    sign = sign == 1 ? '' : '-';
+
+    cal8 = sign + intpart + 'h' + minutes;
+    calculo8 = (intpart * 60) + minutes
+
+    // console.log('Cal 8', cal8)
+    // console.log('Calculo 8', calculo8)
+  }
+
+
+
+  <---------------------------------->
+  onShare = async () => {
+    try {
+      const { currentUser } = firebase.auth();
+      const id = currentUser.uid;
+      const result = await Share.share({
+        message:
+          `https://www.nitlab.com/munique/${id}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+  onAddItem = () => {
+    // not allowed AND not working
+    this.setState(state => {
+      const list = state.respostas.push(state.value);
+      return {
+        list,
+        value: '',
+      };
+    });
+  };

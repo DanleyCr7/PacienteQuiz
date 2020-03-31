@@ -5,8 +5,8 @@ import CronotipoMunique from './pages/CronotipoMunique';
 import form from './pages/form';
 import Edinburgh from './pages/Edinburgh';
 import beck1 from './pages/Escala1Beck';
-import EscalaAnsiedade from './pages/EscalaAnsiedade';
-import EscalaAtencao from './pages/EscalaAtencao';
+import Ansiedade from './pages/EscalaAnsiedade';
+import Atencao from './pages/EscalaAtencao';
 import Ostberg from './pages/Ostberg';
 import Pisttsburgh from './pages/pisttsburgh';
 
@@ -20,35 +20,35 @@ const Router = createStackNavigator({
   },
   'beck1': {
     screen: beck1,
-    path: 'beck/:beck',
+    path: 'beck/:id',
     navigationOptions: {
       title: 'Escala 1 de beck',
     }
   },
   'CronotipoMunique': {
     screen: CronotipoMunique,
-    path: 'munique/:munique',
+    path: 'munique/:id',
     navigationOptions: {
       title: 'Escala',
     }
   },
-  'EscalaAnsiedade': {
-    screen: EscalaAnsiedade,
-    path: 'ansiedade/:ansiedade',
+  'Ansiedade': {
+    screen: Ansiedade,
+    path: 'ansiedade/:id',
     navigationOptions: {
       title: 'Escala de Ansiedade',
     }
   },
-  'EscalaAtencao': {
-    screen: EscalaAtencao,
-    path: 'atencao/:atencao',
+  'Atencao': {
+    screen: Atencao,
+    path: 'atencao/:id',
     navigationOptions: {
-      title: 'Escala de Ansiedade',
+      title: 'Escala de Atenção',
     }
   },
   'Ostberg': {
     screen: Ostberg,
-    path: 'ostberg/:ostberg',
+    path: 'ostberg/:id',
     navigationOptions: {
       title: 'Escala Ostberg',
     }
@@ -61,18 +61,19 @@ const Router = createStackNavigator({
   },
   'Edinburgh': {
     screen: Edinburgh,
-    path: 'edinburgh/:edinburgh',
+    path: 'edinburgh/:id',
     navigationOptions: {
       title: 'Edinburgh',
     }
   },
   'Pisttsburgh': {
     screen: Pisttsburgh,
-    path: 'pisttsburgh/:pisttsburgh',
+    path: 'pisttsburgh/:id',
     navigationOptions: {
       title: 'pisttsburgh',
     }
   },
+
 
 },
   {

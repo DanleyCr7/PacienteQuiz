@@ -20,34 +20,23 @@ import ciclo from '../../assets/ciclo.png'
 const { width } = Dimensions.get('window')
 import DatePicker from 'react-native-datepicker'
 import { RadioButtons } from 'react-native-radio-buttons'
-import { setState } from 'expect/build/jestMatchersObject';
-
-var teste = null
-var selected = null
+import AsyncStorage from '@react-native-community/async-storage';
+var sonsetT = 0
+var sonsetF = 0
+var sdT = 0
+var sdF = 0
+var msfT = 0
+var msfF = 0
+var avsdT = 0
+var msfSC = 0
+var jls = 0
+var selected = 0
+var selected2 = ''
 var question = []
-var option = ['Sim', 'Não']
-//com as siglas sao apenas para mostrar
-var cal1 = ''
-var cal2 = ''
-var cal3 = ''
-var cal4 = ''
-var cal5 = ''
-var cal5 = ''
-var cal6 = ''
-var cal7 = ''
-var cal8 = ''
-var cal9 = ''
-//com nome completo são para os calculos
-var calculo1 = null
-var calculo2 = null
-var calculo3 = null
-var calculo4 = null
-var calculo5 = null
-var calculo6 = null
-var calculo7 = null
-var calculo8 = null
-var calculo9 = null
-
+var options2 = [
+  'Sim',
+  'Não'
+]
 export default class pages extends Component {
   constructor(props) {
     super(props)
@@ -56,13 +45,13 @@ export default class pages extends Component {
       pergunta1: '00:00',
       pergunta2: '00:00',
       pergunta3: '00:00',
-      pergunta4: null,
+      pergunta4: 0,
       pergunta5: '05:00',
       pergunta6: '',
       pergunta7: '00:00',
       pergunta8: '00:00',
       pergunta9: '00:00',
-      pergunta10: null,
+      pergunta10: 0,
       pergunta11: '05:00',
       pergunta12: '',
       nome: '',
@@ -73,405 +62,192 @@ export default class pages extends Component {
       // date: "",
     }
   }
-  onShare = async () => {
-    try {
-      const { currentUser } = firebase.auth();
-      const id = currentUser.uid;
-      const result = await Share.share({
-        message:
-          `https://www.nitlab.com/munique/${id}`,
-      });
+  converterMin(hora) {
+    let s = hora.split(':');
+    let min = parseInt(s[0]) * 60 + parseInt(s[1]);
+    hora = min / 60
+    return hora
+  }
 
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-  onAddItem = () => {
-    // not allowed AND not working
-    this.setState(state => {
-      const list = state.respostas.push(state.value);
-      return {
-        list,
-        value: '',
-      };
-    });
-  };
-
-  // async cad() {
-  //   const { pesquisador, nome, pergunta1, pergunta2, pergunta3, pergunta4, pergunta5, pergunta6 } = this.state;
-  //   // const no = nome
-  //   const respostas = {
-  //     pergunta01: `Vou para a cama às ${pergunta1} horas`,
-  //     pergunta2,
-  //     pergunta03: `Às ${pergunta3} horas, estou pronto para dormir`,
-  //     pergunta04: `Necessito de ${pergunta4} minutos para adormecer`,
-  //     pergunta05: `Acordo às ${pergunta5} horas`,
-  //     pergunta06: `Passados ${pergunta6} minutos acordo`,
-  //     pesquisador: 'Jacks'
-  //   }
-  //   const dados = {
-  //     cpf: `07376714324`,
-  //     dataNasci: '26/10/1996',
-  //     CidadeOrig: 'Parnaíba',
-  //     peso: '65 kg',
-  //     altura: '1.72',
-  //     email: 'Danrleysil46@gmail.com',
-  //     Telefone: '86 995430844',
-  //     Curso: 'Sistemas de informação',
-  //     periodo: 6,
-  //     dataColeta: '10/12/2019',
-  //   }
-  //   // console.log(respostas)
-  //   const db = firebase.database();
-  //   await db.ref(`/${pesquisador}/CronotipoMunique/${nome}/respostas`).set(respostas)
-  //   await db.ref(`/${pesquisador}/CronotipoMunique/${nome}/dados`).set(dados)
-  //   await db.ref(`/CronotipoMunique/${nome}/resposta`).set(respostas)
-  //   await db.ref(`/CronotipoMunique/${nome}/dados`).set(dados)
-  // }
-
+  sonsetT() {
+    const { pergunta3, pergunta4 } = this.state;
+    let Q3 = this.converterMin(pergunta3)
+    let Q4 = pergunta4 / 60
+    let resposta = (Q3 - Q4) - 24
+    sonsetT = resposta
+    console.log('SosentT', sonsetT)
+  }
+  sonsetF() {
+    const { pergunta9, pergunta10 } = this.state;
+    let Q3 = this.converterMin(pergunta9)
+    let Q4 = pergunta10 / 60
+    let resposta = (Q3 - Q4) - 24
+    sonsetF = resposta
+    console.log('SosentF', sonsetF)
+  }
+  sdT() {
+    const { pergunta5 } = this.state;
+    let Q5 = this.converterMin(pergunta5)
+    let resposta = Q5 - sonsetT
+    sdT = resposta
+    console.log('sdT', sdT)
+  }
+  sdF() {
+    const { pergunta11 } = this.state;
+    let Q5f = this.converterMin(pergunta11)
+    let resposta = Q5f - sonsetF
+    sdF = resposta
+    console.log('sdF', sdF)
+  }
+  msfT() {
+    const { pergunta5 } = this.state;
+    let Q5f = this.converterMin(pergunta5)
+    let resposta = (sonsetT + Q5f) / 2
+    msfT = resposta
+    console.log('msfT', msfT)
+  }
+  msfF() {
+    const { pergunta11 } = this.state;
+    let Q5f = this.converterMin(pergunta11)
+    let resposta = (sonsetF + Q5f) / 2
+    msfF = resposta
+    console.log('msfF', msfF)
+  }
+  avsdT() {
+    let resposta = (sdT * selected) + (sdF * (7 - selected))
+    avsdT = resposta
+    console.log('avsdT', avsdT)
+  }
+  msfSC() {
+    let resposta = ((msfF * 0.5) * (sdF - avsdT)) / 2
+    msfSC = resposta
+    console.log('msfSC', msfSC)
+  }
+  jls() {
+    let resposta = msfF - msfT
+    jls = resposta
+    console.log('jls', jls)
+  }
 
   async cad() {
-    const { pergunta1, pergunta2, pergunta3, pergunta4, pergunta5, pergunta6, pergunta7, pergunta8, pergunta9, pergunta10, pergunta11, pergunta12, diaTrab, foraTrab } = this.state;
+    const { pergunta1, pergunta2, pergunta3, pergunta4, pergunta5, pergunta6, pergunta7, pergunta8,
+      pergunta9, pergunta10, pergunta11, pergunta12, diaTrab, foraTrab } = this.state;
+    var a = pergunta1.split(':');
+    var b = pergunta3.split(':');
+    var c = pergunta7.split(':');
+    var d = pergunta9.split(':');
 
-    // var a = pergunta1.split(':');
-    // var b = pergunta3.split(':');
-    // var c = pergunta7.split(':');
-    // var d = pergunta9.split(':');
+    var per1 = parseInt(a[0]) * 60 + parseInt(a[1]);
+    var per3 = parseInt(b[0]) * 60 + parseInt(b[1]);
+    var per7 = parseInt(c[0]) * 60 + parseInt(c[1]);
+    var per9 = parseInt(d[0]) * 60 + parseInt(d[1]);
+    if (selected2 === 'Não' && selected === null) {
+      await this.sonsetT()
+      await this.sonsetF()
+      await this.sdT()
+      await this.sdF()
+      await this.msfT()
+      await this.msfF()
+      await this.avsdT()
+      await this.msfSC()
+      await this.jls()
+      const calculos = {
+        sonsetT: sonsetT,
+        sonsetF: sonsetF,
+        sdT: sdT,
+        sdF: sdF,
+        msfT: msfT,
+        msfF: msfF,
+        avsdT: avsdT,
+        msfSC: msfSC,
+        jls: jls,
+      }
+      question = {
+        0: { question: pergunta1 },
+        1: { question: pergunta2 },
+        2: { question: pergunta3 },
+        3: { question: pergunta4 },
+        4: { question: pergunta5 },
+        5: { question: pergunta6 },
+        6: { question: pergunta7 },
+        7: { question: pergunta8 },
+        8: { question: pergunta9 },
+        9: { question: pergunta10 },
+        10: { question: pergunta11 },
+        11: { question: pergunta12 },
+        12: { question: diaTrab },
+        12: { question: foraTrab },
+        calculos: calculos,
+      }
 
-    // var per1 = parseInt(a[0]) * 60 + parseInt(a[1]);
-    // var per3 = parseInt(b[0]) * 60 + parseInt(b[1]);
-    // var per7 = parseInt(c[0]) * 60 + parseInt(c[1]);
-    // var per9 = parseInt(d[0]) * 60 + parseInt(d[1]);
-    // if (selected === null) {
-    //   Alert.alert('Falha', 'Informe o número de dias trabalhados')
-    // }
-    // else if (per1 > per3) {
-    //   Alert.alert('Dias de trabalho', 'O seu horario de ir para cama não pode ser maior que está pronto para dormir')
-    // }
-    // else if (per7 > per9) {
-    //   Alert.alert('Dias livres', 'O seu horario de ir para cama não pode ser maior que está pronto para dormir')
-    // }
-    // else {
-    //   const { pesquisador, nome, pergunta1, pergunta2, pergunta3, pergunta4, pergunta5, pergunta6, pergunta7, pergunta8, pergunta9, pergunta10, pergunta11, pergunta12, foraTrab, diaTrab } = this.state;
-    //   await this.cal1()
-    //   await this.cal2()
-    //   await this.cal3()
-    //   await this.cal4()
-    //   await this.cal6()
-    //   await this.cal9()
-    //   await this.cal5()
-    //   await this.cal7()
-    //   await this.cal8()
-    // const no = nome
-    question = {
-      0: { question: `Vou para a cama às ${pergunta1} horas` },
-      1: { question: pergunta2 },
-      2: { question: `Às ${pergunta3} horas, estou pronto para dormir` },
-      3: { question: `Necessito de ${pergunta4} minutos para adormecer` },
-      4: { question: `Acordo às ${pergunta5} horas` },
-      5: { question: `Passados ${pergunta6} minutos acordo` },
-      6: { question: `Vou para a cama às ${pergunta7} horas` },
-      7: { question: '' },
-      8: { question: `Às ${pergunta9} horas, estou pronto para dormir` },
-      9: { question: `Necessito de ${pergunta10} minutos para adormecer` },
-      10: { question: `Acordo às ${pergunta11} horas` },
-      11: { question: `Passados ${pergunta12} minutos acordo` },
-      12: { question: `Nos Dias de Trabalho ${diaTrab}` },
-      12: { question: `Fora Dos Dias de Trabalho ${foraTrab}` },
+      const { params } = this.props.navigation.state
+      await this.props.navigation.replace('form', {
+        question: question,
+        escala: 'CronotipoMunique',
+        idPesquisador: params.id
+      })
     }
-    const respostas = {
-      question,
-      idPesquisador: this.state.idPesquisador
+    else if (selected2 = 'Sim') {
+      if (selected === null) {
+        Alert.alert('Falha', 'Informe o número de dias trabalhados')
+      }
+      else if (per1 > per3) {
+        Alert.alert('Dias de trabalho', 'O seu horario de ir para cama não pode ser maior que está pronto para dormir')
+      }
+      else if (per7 > per9) {
+        Alert.alert('Dias livres', 'O seu horario de ir para cama não pode ser maior que está pronto para dormir')
+      }
+      else {
+        await this.sonsetT()
+        await this.sonsetF()
+        await this.sdT()
+        await this.sdF()
+        await this.msfT()
+        await this.msfF()
+        await this.avsdT()
+        await this.msfSC()
+        await this.jls()
+        const calculos = {
+          sonsetT: sonsetT,
+          sonsetF: sonsetF,
+          sdT: sdT,
+          sdF: sdF,
+          msfT: msfT,
+          msfF: msfF,
+          avsdT: avsdT,
+          msfSC: msfSC,
+          jls: jls,
+        }
+        question = {
+          0: { question: pergunta1 },
+          1: { question: pergunta2 },
+          2: { question: pergunta3 },
+          3: { question: pergunta4 },
+          4: { question: pergunta5 },
+          5: { question: pergunta6 },
+          6: { question: pergunta7 },
+          7: { question: pergunta8 },
+          8: { question: pergunta9 },
+          9: { question: pergunta10 },
+          10: { question: pergunta11 },
+          11: { question: pergunta12 },
+          12: { question: diaTrab },
+          12: { question: foraTrab },
+          calculos: calculos,
+        }
+
+        const { params } = this.props.navigation.state
+        await this.props.navigation.replace('form', {
+          question: question,
+          escala: 'CronotipoMunique',
+          idPesquisador: params.id
+        })
+      }
     }
-    // console.log(question)
-    await this.props.navigation.replace('form', {
-      respostas: respostas,
-      rota: 'CronotipoMunique'
-    })
-    // await Alert.alert('Sucesso', ` Sonset= ${cal1} \n Sonset2= ${cal2} \n SDW= ${cal3} \n MSF= ${cal4} \n SDF= ${cal6} \n MSW= ${cal9} \n AVSD= ${cal5} \n MSFS= ${cal7} \n JLS= ${cal8}`)
-
   }
 
-  cal1() {
-    const { pergunta3, pergunta4, pergunta1 } = this.state;
+  mostrar() {
 
-    var s = pergunta3.split(':');
-    var e = pergunta1.split(':');
-
-    var end = parseInt(e[0]) * 60 + parseInt(e[1]);
-    console.log('Variavel de teste', end)
-    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
-    // console.log(start)
-    var Sosent = (((start - pergunta4) - 1440) / 60) * -1
-    // console.log(Sosent)
-    var sign = Sosent >= 0 ? 1 : -1;
-    var min = 1 / 60;
-    // Get positive value of num
-    Sosent = Sosent * sign;
-    // Separate the int from the decimal part
-    var intpart = Math.floor(Sosent);
-    // console.log('Parte inteira', intpart)
-    var decpart = Sosent - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    cal1 = sign + intpart + 'h' + minutes;
-    calculo1 = (intpart * 60) + minutes
-
-    console.log('Cal 1', cal1)
-    console.log('Calculo 1', calculo1)
-  }
-  cal2() {
-    const { pergunta9, pergunta10 } = this.state;
-
-    var s = pergunta9.split(':');
-    // var e = pergunta4.split(':');
-
-    // var end = parseInt(e[0]) * 60 + parseInt(e[1]);
-    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
-    // console.log(start)
-    var Sosent = (((start - pergunta10) - 1440) / 60) * -1
-    // console.log(Sosent)
-    var sign = Sosent >= 0 ? 1 : -1;
-    var min = 1 / 60;
-
-    // Get positive value of num
-    Sosent = Sosent * sign;
-
-    // Separate the int from the decimal part
-    var intpart = Math.floor(Sosent);
-    // console.log('Parte inteira', intpart)
-    var decpart = Sosent - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // console.log('Transformada em minutos', minutes)
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    // pad() adds a leading zero if needed
-    cal2 = sign + intpart + 'h' + minutes
-    calculo2 = (intpart * 60) + minutes;
-    console.log('Calc 2', cal2)
-    console.log('Calculo 2', calculo2)
-  }
-
-  cal3() {
-    const { pergunta5 } = this.state;
-
-    var s = pergunta5.split(':');
-
-    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
-
-    calculo3 = (start - calculo1) / 60
-    var sign = calculo3 >= 0 ? 1 : -1;
-    var min = 1 / 60;
-
-    // Get positive value of num
-    calculo3 = calculo3 * sign;
-
-    // Separate the int from the decimal part
-    var intpart = Math.floor(calculo3);
-    // console.log('Parte inteira', intpart)
-    var decpart = calculo3 - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // console.log('Transformada em minutos', minutes)
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    // pad() adds a leading zero if needed
-    console.log('->', sign)
-    cal3 = sign + intpart + 'h' + minutes;
-    calculo3 = (intpart * 60) + minutes
-    console.log('Calc 3', cal3)
-    console.log('calculo 3', calculo3)
-  }
-  cal4() {
-    const { pergunta5 } = this.state;
-    var s = pergunta5.split(':');
-
-    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
-
-    calculo4 = ((calculo1 + start) / 2) / 60
-
-    var sign = calculo4 >= 0 ? 1 : -1;
-    var min = 1 / 60;
-
-    // Get positive value of num
-    calculo3 = calculo4 * sign;
-
-    // Separate the int from the decimal part
-    var intpart = Math.floor(calculo4);
-    // console.log('Parte inteira', intpart)
-    var decpart = calculo4 - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // console.log('Transformada em minutos', minutes)
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    // pad() adds a leading zero if needed
-    console.log('->', sign)
-    cal4 = sign + intpart + 'h' + minutes;
-    calculo4 = (intpart * 60) + minutes
-    console.log('Calc 4', cal4)
-    console.log('calculo 4', calculo4)
-  }
-
-  cal6() {
-    const { pergunta11 } = this.state;
-
-    var s = pergunta11.split(':');
-
-    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
-
-    calculo6 = (start - calculo2) / 60
-    var sign = calculo6 >= 0 ? 1 : -1;
-    var min = 1 / 60;
-
-    // Get positive value of num
-    calculo6 = calculo6 * sign;
-
-    // Separate the int from the decimal part
-    var intpart = Math.floor(calculo6);
-    // console.log('Parte inteira', intpart)
-    var decpart = calculo6 - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // console.log('Transformada em minutos', minutes)
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    // pad() adds a leading zero if needed
-    console.log('->', sign)
-    cal6 = sign + intpart + 'h' + minutes;
-    calculo6 = (intpart * 60) + minutes
-    console.log('Calc 6', cal6)
-    console.log('calculo 6', calculo6)
-  }
-  cal9() {
-    const { pergunta11 } = this.state;
-    var s = pergunta11.split(':');
-
-    var start = parseInt(s[0]) * 60 + parseInt(s[1]);
-
-    calculo9 = ((start + calculo2) / 2) / 60
-    var sign = calculo9 >= 0 ? 1 : -1;
-    var min = 1 / 60;
-
-    // Get positive value of num
-    calculo9 = calculo9 * sign;
-
-    // Separate the int from the decimal part
-    var intpart = Math.floor(calculo9);
-    // console.log('Parte inteira', intpart)
-    var decpart = calculo9 - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // console.log('Transformada em minutos', minutes)
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    // pad() adds a leading zero if needed
-    console.log('->', sign)
-    cal9 = sign + intpart + 'h' + minutes;
-    calculo9 = (intpart * 60) + minutes
-    console.log('Calc 9', cal9)
-    console.log('calculo 9', calculo9)
-  }
-
-  cal5() {
-    calculo5 = (((calculo3 * (selected * 1440)) + (calculo6 * ((7 - selected) * 1440))) / 10080) / 60
-    var sign = calculo5 >= 0 ? 1 : -1;
-    var min = 1 / 60;
-    console.log(calculo5)
-    // Get positive value of num
-    calculo5 = calculo5 * sign;
-    // Separate the int from the decimal part
-    var intpart = Math.floor(calculo5);
-    // console.log('Parte inteira', intpart)
-    var decpart = calculo5 - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    cal5 = sign + intpart + 'h' + minutes;
-    calculo5 = (intpart * 60) + minutes
-
-    console.log('Cal 5', cal5)
-    console.log('Calculo 5', calculo5)
-  }
-  cal7() {
-    calculo7 = ((calculo4 * 0, 5 * (calculo6 - calculo5)) / 2) / 60
-    var sign = calculo7 >= 0 ? 1 : -1;
-    var min = 1 / 60;
-    // Get positive value of num
-    calculo7 = calculo7 * sign;
-    // Separate the int from the decimal part
-    var intpart = Math.floor(calculo7);
-    // console.log('Parte inteira', intpart)
-    var decpart = calculo7 - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    cal7 = sign + intpart + 'h' + minutes;
-    calculo7 = (intpart * 60) + minutes
-
-    console.log('Cal 7', cal7)
-    console.log('Calculo 7', calculo7)
-  }
-  cal8() {
-    calculo8 = (calculo4 - calculo9) / 60
-    var sign = calculo7 >= 0 ? 1 : -1;
-    var min = 1 / 60;
-    // Get positive value of num
-    calculo8 = calculo8 * sign;
-    // Separate the int from the decimal part
-    var intpart = Math.floor(calculo8);
-    // console.log('Parte inteira', intpart)
-    var decpart = calculo8 - intpart;
-    // Round to nearest minute
-    decpart = min * Math.round(decpart / min);
-    // console.log('Parte flutuante', decpart)
-    var minutes = Math.floor(decpart * 60);
-    // Sign result
-    sign = sign == 1 ? '' : '-';
-
-    cal8 = sign + intpart + 'h' + minutes;
-    calculo8 = (intpart * 60) + minutes
-
-    console.log('Cal 8', cal8)
-    console.log('Calculo 8', calculo8)
   }
   renderRadioButton() {
     const options = [
@@ -483,6 +259,7 @@ export default class pages extends Component {
       6,
       7
     ]
+
     function setSelectedOption(selectedOption) {
       selected = selectedOption
       console.log(selected)
@@ -517,13 +294,45 @@ export default class pages extends Component {
     )
   }
 
+  renderRadioButton2() {
+    function setSelectedOption(selectedOption) {
+      selected2 = selectedOption
+      if (selected2 === 'Não') {
+        selected = null
+      }
+    }
+
+    function renderOption(option, selected, onSelect, index) {
+      const style = selected ? styles.escolhido2 : styles.naoEscolhido2;
+
+      return (
+        <TouchableWithoutFeedback onPress={onSelect} key={index}>
+          <Text style={style}>{option}</Text>
+        </TouchableWithoutFeedback>
+      );
+    }
+
+    function renderContainer(optionNodes) {
+      return <View>{optionNodes}</View>;
+    }
+
+    return (
+      <View style={{ width: "100%", alignItems: 'center' }} >
+        <RadioButtons
+          // style={{ flexDirection: "row", flex: 1 }}
+          options={options2}
+          onSelection={setSelectedOption.bind(this)}
+          selectedOption={this.state.selectedOption}
+          renderOption={renderOption}
+          renderContainer={RadioButtons.renderHorizontalContainer}
+        />
+        {/* <Text>Selected option: {this.state.selectedOption || 'none'}</Text> */}
+      </View>
+    )
+  }
+
 
   render() {
-    const { navigation } = this.props;
-    const { nome } = navigation.state.params;
-    const { params } = this.props.navigation.state;
-    this.state.idPesquisador = params.munique
-    this.state.nome = 'danrley'
 
     return (
       <View style={styles.container}>
@@ -531,6 +340,10 @@ export default class pages extends Component {
           <View style={styles.inic}>
             <Text style={styles.textTrue}>Você tem um horário regular de {'\n'}trabalho
           (também como dono(a){'\n'} de casa, etc)?</Text>
+
+            {this.renderRadioButton2()}
+
+            <Text style={styles.textTrue2}>Quantos dias por semana?</Text>
             {this.renderRadioButton()}
             <Image
               source={ciclo}
@@ -996,7 +809,7 @@ export default class pages extends Component {
               <Text style={styles.textPerg}>Fora Dos Dias de Trabalho</Text>
               <DatePicker
                 style={{ width: 80 }}
-                date={this.state.diaTrab}
+                date={this.state.foraTrab}
                 androidMode="spinner"
                 mode='time'
                 confirmBtnText="Confirm"
@@ -1019,7 +832,7 @@ export default class pages extends Component {
                   },
                   // ... You can check the source to find the other keys.
                 }}
-                onDateChange={(date) => { this.setState({ diaTrab: date }) }}
+                onDateChange={(date) => { this.setState({ foraTrab: date }) }}
               />
             </View>
             {/* <--pergunta 06--> */}
@@ -1048,7 +861,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     marginTop: 15,
-    textAlign: 'justify'
+    // textAlign: 'justify'
+  },
+  textTrue2: {
+    color: '#fff',
+    fontSize: 20,
+    // marginTop: ,
+    marginLeft: -45
+    // textAlign: 'justify'
   },
   input: {
     fontSize: 16,
@@ -1128,7 +948,7 @@ const styles = StyleSheet.create({
     // margin: 8,
     // height: 40,
     width: 40,
-    marginTop: 20,
+    marginTop: 8,
     borderColor: '#3B54B8',
     marginHorizontal: 3
   },
@@ -1142,6 +962,35 @@ const styles = StyleSheet.create({
     // margin: 8,
     // height: 40,
     width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+    marginHorizontal: 3
+  },
+  escolhido2: {
+    fontSize: 20,
+    color: '#fff',
+    borderWidth: 2,
+    textAlign: 'center',
+    backgroundColor: '#3B54B8',
+    borderRadius: 10,
+    margin: 8,
+    height: 40,
+    width: 100,
+    marginTop: 20,
+    borderColor: '#3B54B8',
+    marginHorizontal: 3
+  },
+  naoEscolhido2: {
+    fontSize: 20,
+    color: '#fff',
+    borderWidth: 2,
+    textAlign: 'center',
+    borderColor: '#3B54B8',
+    borderRadius: 10,
+    margin: 8,
+    height: 40,
+    width: 100,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,

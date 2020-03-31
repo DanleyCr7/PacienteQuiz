@@ -9,6 +9,7 @@ import {
   Alert
 } from 'react-native';
 import firebase from 'firebase'
+import AsyncStorage from '@react-native-community/async-storage';
 import { RadioButtons } from 'react-native-radio-buttons'
 const { width, height } = Dimensions.get('window')
 var index = -1
@@ -57,57 +58,41 @@ export default class Quiz extends React.Component {
 
 
   loadQustion = async (i) => {
+    let pesoSelected = options.indexOf(selected)
+    if (pesoSelected >= 0) {
+      calculo = calculo + pesoSelected
+      console.log(calculo)
+    }
     options = [
       "Não",
       "Não me incomodou muito",
-      "Foi muito desagradavél mas pude suportar",
+      "Foi muito desagradável mas pude suportar",
       "Dificilmente pude suportar",
     ]
-    calculo = calculo + options.lastIndexOf(selected)
     this.setState({ Proximo: 'Proximo' })
-    // console.log(i)
     await this.setState({ question: this.state.myText[i + 1], nquestion: i + 1, total: this.state.myText.length - 1 });
-    await question.push({ question: this.state.myText[i], resposta: selected })
-    // console.log(question)
+    if (pesoSelected >= 0) {
+      await question.push({ question: this.state.myText[i], resposta: selected, peso: pesoSelected })
+    }
+    let res = options.indexOf(selected)
+    if (res >= 0) {
+      calculo = calculo + res
+    }
     if (i === this.state.myText.length - 2) {
       this.setState({ Proximo: 'Finalizar', Anterior: '' })
-      // const teste = {
-      // 	question: question
-      // }
-      // console.log(teste)
-      // const db = firebase.database();
-      // db.ref(`/Edinburgh`).push(teste)
     }
     if (i === this.state.myText.length - 1) {
-      // this.setState({ Proximo: 'Finalizar' })
-      if (calculo <= 10) {
-        Alert.alert('Resultado', 'Grau minimo de ansiedade')
-      } else if (calculo >= 11 && calculo <= 19) {
-        Alert.alert('Resultado', 'Ansiedade leve')
-      } else if (calculo >= 20 && calculo <= 30) {
-        Alert.alert('Resultado', 'Ansiedade moderada')
-      } else if (calculo >= 31 && calculo <= 63) {
-        Alert.alert('Resultado', 'Ansiedade severa')
-      }
+      const { params } = this.props.navigation.state
+      await this.props.navigation.replace('form', {
+        question: question,
+        escala: 'Ansiedade',
+        idPesquisador: params.id
+      })
     }
-    //   const respostas = {
-    //     question: question,
-    //     idPesquisador: this.state.pesquisador
-    //   }
-    //   // console.log(teste)
-    //   await this.props.navigation.replace('form', {
-    //     respostas: respostas,
-    //     rota: 'Ansiedade'
-    //   })
-    // }
   }
 
 
   render() {
-    const { params } = this.props.navigation.state;
-    this.state.pesquisador = params.ansiedade
-
-
     function setSelectedOption(selectedOption) {
       selected = selectedOption
       // console.log(selected)

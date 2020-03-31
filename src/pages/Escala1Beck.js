@@ -10,6 +10,7 @@ import {
   Alert
 } from 'react-native';
 import firebase from 'firebase'
+import AsyncStorage from '@react-native-community/async-storage';
 import { RadioButtons } from 'react-native-radio-buttons'
 const { width, height } = Dimensions.get('window')
 var index = -1
@@ -169,50 +170,33 @@ export default class Quiz extends React.Component {
 
   loadQustion = async (i) => {
     this.setState({ Proximo: 'Proximo', Anterior: 'Anterior' })
-    calculo = calculo + options.lastIndexOf(selected)
-    // console.log(calculo)
+    let pesoSelected = options.indexOf(selected)
+    if (pesoSelected >= 0) {
+      calculo = calculo + pesoSelected
+      console.log(calculo)
+    }
     options = this.state.myText[i]
+
     await this.setState({ nquestion: i + 1, total: this.state.myText.length - 1 });
-
-    // await question.push({ question: selected })
-    // if (selected == 'Não me sinto triste') {
-    //   console.log(1)
-    // }
-
+    if (pesoSelected >= 0) {
+      await question.push({ resposta: selected, peso: pesoSelected })
+    }
     if (i === this.state.myText.length - 2) {
       this.setState({ Proximo: 'Finalizar', Anterior: '' })
     }
     if (i === this.state.myText.length - 1) {
-      // this.setState({ Proximo: 'Finalizar' })
-      if (calculo <= 9) {
-        Alert.alert('Resultado', 'Não está deprimido')
-      } else if (calculo >= 10 && calculo <= 18) {
-        Alert.alert('Resultado', 'Depressão leve')
-      } else if (calculo >= 19 && calculo <= 29) {
-        Alert.alert('Resultado', 'Depressão moderada')
-      } else if (calculo >= 30 && calculo <= 63) {
-        Alert.alert('Resultado', 'Depressão severa')
-      }
-      // const respostas = {
-      //   question: question,
-      //   idPesquisador: this.state.pesquisador,
-      // }
-      // await this.props.navigation.replace('form', {
-      //   respostas: respostas,
-      //   rota: 'Beck'
-      // })
+      const { params } = this.props.navigation.state
+      await this.props.navigation.replace('form', {
+        question: question,
+        escala: 'beck1',
+        idPesquisador: params.id
+      })
     }
 
   }
 
 
   render() {
-    const { params } = this.props.navigation.state;
-    this.state.pesquisador = params.beck
-    // const { params } = this.props.navigation.state;
-    // this.state.pesquisador = params.edinburgh
-    // const options = this.state.options
-
     function setSelectedOption(selectedOption) {
       selected = selectedOption
       // console.log(options.lastIndexOf(selected))
